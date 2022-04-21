@@ -1,24 +1,29 @@
 #DATE   : 5/4/2022
 #AUTHOR : imadumuh
-
-
 import re 
- 
-a_file = open("24jamrandomservices.pcom")
-# a_file = open("data.txt")
-lines = a_file.readlines()
-a_file.close()
+from tkinter import *
+from tkinter import filedialog
 
-def listToString(s): 
+
+filepath = filedialog.askopenfilename(title="Open File Input")
+inputfile = open(filepath, 'r')
+# inputfile = open("data.txt")
+lines = inputfile.readlines()
+inputfile.close()
+
+def listToString(list_value): 
     # initialize an empty string
     str1 = "" 
     
     # return string  
-    return (str1.join(s))
+    return (str1.join(list_value))
 
-f = open("hasil.pcom", "w")
+
+# outputFile = open("hasil.pcom", "w")
+outputFile = filedialog.asksaveasfile(title="savefile", defaultextension='.pcom') #pop up save dialog box
+
 for line in lines:
-    
+    #regex finding data between squarebracket []
     data = re.findall('(?<=\[).+?(?=\])', line)
     datastring = listToString(data)
     
@@ -32,13 +37,13 @@ for line in lines:
     
     
     if not data: #check if res returned empty list
-        f.write(linestring+'\n')
+        outputFile.write(linestring+'\n')
     elif linestring[:4] != '00A4':
-        f.write(linestring+'\n')
+        outputFile.write(linestring+'\n')
     elif linestring[:4] == '00A4':
         # print('00C00000 W(2:2)'+'['+datastring+']'+' (9000)') #print data after convert list to string
-        f.write(linewithoutdata.strip()+'\n')
-        f.write('00C00000 W(2:2) '+'['+datastring+']'+' (9000,91XX)'+'\n')
+        outputFile.write(linewithoutdata.strip()+'\n')
+        outputFile.write('00C00000 W(2:2) '+'['+datastring+']'+' (9000,91XX)'+'\n')
     else:
-        f.write(linestring+'\n')
-f.close()
+        outputFile.write(linestring+'\n')
+outputFile.close()
